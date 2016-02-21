@@ -51,10 +51,10 @@
        </font>
       </property>
       <property name="frameShape">
-       <enum>QFrame::Box</enum>
+       <enum>QFrame::StyledPanel</enum>
       </property>
       <property name="frameShadow">
-       <enum>QFrame::Sunken</enum>
+       <enum>QFrame::Plain</enum>
       </property>
       <property name="lineWidth">
        <number>4</number>
@@ -320,9 +320,9 @@ p, li { white-space: pre-wrap; }
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <tabstops>
+  <tabstop>textBrowser_InfoAboutLearnItems</tabstop>
   <tabstop>lineEdit_csvPathForItems</tabstop>
   <tabstop>lineEdit_csvPathForSchedule</tabstop>
-  <tabstop>button_ProcessData</tabstop>
   <tabstop>button_MakeOutlookFile</tabstop>
   <tabstop>button_MakeSchedule</tabstop>
   <tabstop>button_Quit</tabstop>

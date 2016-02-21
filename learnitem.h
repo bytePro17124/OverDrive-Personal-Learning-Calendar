@@ -2,6 +2,8 @@
 #define LEARNITEM_H
 #include <QString>
 
+
+
 class LearnItem
 {
 public:
