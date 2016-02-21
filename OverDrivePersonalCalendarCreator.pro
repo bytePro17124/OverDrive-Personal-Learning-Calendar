@@ -13,8 +13,10 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        inputwindow.cpp
+        inputwindow.cpp \
+    learnitem.cpp
 
-HEADERS  += inputwindow.h
+HEADERS  += inputwindow.h \
+    learnitem.h
 
 FORMS    += inputwindow.ui
