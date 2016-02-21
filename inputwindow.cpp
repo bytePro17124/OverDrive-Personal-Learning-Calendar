@@ -69,7 +69,7 @@ void InputWindow::on_button_ProcessData_released()
         qDebug() << "Your schedule file is " << filename2;
 
         QFile learnfile(filename);
-        if (!learnfile.open(QIODevice::ReadOnly)) {
+        if (!learnfile.open(QIODevice::ReadOnly | QIODevice::Text)) {
             qDebug() << learnfile.errorString();
         }
         while (!learnfile.atEnd()) {
