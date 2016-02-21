@@ -15,6 +15,17 @@ public:
     explicit InputWindow(QWidget *parent = 0);
     ~InputWindow();
 
+private slots:
+    void on_lineEdit_csvPathForItems_selectionChanged();
+
+    void on_lineEdit_csvPathForSchedule_selectionChanged();
+
+    void on_button_Quit_released();
+
+    void on_actionExit_triggered();
+
+    void on_button_ProcessData_released();
+
 private:
     Ui::InputWindow *ui;
 };

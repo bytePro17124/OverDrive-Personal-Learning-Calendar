@@ -6,17 +6,17 @@ LearnItem::LearnItem()
     priority = 0;
 }
 
-QString getName() const {
+QString LearnItem::getName() const {
     return item_name;
 }
-int getPriority() const{
+int LearnItem::getPriority() const {
     return priority;
 }
 
-void setName(const QString& n) {
+void LearnItem::setName(const QString& n) {
     item_name = n;
 }
 
-void setPriority(const int& p) {
+void LearnItem::setPriority(const int& p) {
     priority = p;
 }
