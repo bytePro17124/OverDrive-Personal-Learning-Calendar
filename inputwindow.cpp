@@ -7,7 +7,6 @@
 #include <QFile>
 #include "learnitem.h"
 
-extern LearnItem learnschedule;
 extern QVector<LearnItem> learnlist;
 
 InputWindow::InputWindow(QWidget *parent) :
@@ -72,11 +71,38 @@ void InputWindow::on_button_ProcessData_released()
         if (!learnfile.open(QIODevice::ReadOnly | QIODevice::Text)) {
             qDebug() << learnfile.errorString();
         }
-        while (!learnfile.atEnd()) {
-            LearnItem* tmp = new LearnItem;
-            tmp->setName(learnfile.readLine());
-            qDebug() << tmp->getName();
+        QString AllLearnData = learnfile.readAll();
+        qDebug() << AllLearnData;
+        learnfile.close();
+
+            //makes a vector list of all the data in the learnfile provided
+        while (!AllLearnData.isEmpty()) {
+
+            QString tmpname;
+            int index = AllLearnData.indexOf(',');
+            qDebug() << index;
+            tmpname.resize(index);
+            for (int i = 0; i < index; i++) { tmpname[i] = AllLearnData[i]; }
+            qDebug() << tmpname;
+            AllLearnData.replace(0, index+1, "");
+            qDebug() << AllLearnData;
+
+            index = AllLearnData.indexOf('\n');
+            qDebug() << index;
+            QString tmp;
+            for (int i = 0; i < index; i++) { tmp[i] = AllLearnData[i]; }
+            int tmppriority = tmp.toInt();
+            AllLearnData.replace(0, index+1, "");
+            qDebug() << tmppriority;
+            qDebug() << AllLearnData;
+
+            LearnItem * newitem = new LearnItem;
+            newitem->setName(tmpname);
+            newitem->setPriority(tmppriority);
+
+            learnlist.push_back(*newitem);
         }
 
+        //
     }
 }

@@ -9,9 +9,10 @@ class LearnItem
 public:
     LearnItem();
 
+    //Accessors
     QString getName() const;
     int getPriority() const;
-
+    //Setters
     void setName(const QString&);
     void setPriority(const int&);
 

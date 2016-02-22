@@ -14,9 +14,11 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         inputwindow.cpp \
-    learnitem.cpp
+    learnitem.cpp \
+    availabilitycalendar.cpp
 
 HEADERS  += inputwindow.h \
-    learnitem.h
+    learnitem.h \
+    availabilitycalendar.h
 
 FORMS    += inputwindow.ui
