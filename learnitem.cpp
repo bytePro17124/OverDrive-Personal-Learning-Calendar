@@ -20,3 +20,5 @@ void LearnItem::setName(const QString& n) {
 void LearnItem::setPriority(const int& p) {
     priority = p;
 }
+
+

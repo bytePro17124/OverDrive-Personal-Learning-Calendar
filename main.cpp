@@ -3,7 +3,6 @@
 #include "learnitem.h"
 #include <QVector>
 
-
 QVector<LearnItem> learnlist;
 
 int main(int argc, char *argv[])
