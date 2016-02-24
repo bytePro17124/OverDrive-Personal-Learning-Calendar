@@ -7,6 +7,7 @@
 #include <QFile>
 #include "learnitem.h"
 #include "availabilitycalendar.h"
+#include <random>
 
 extern QVector<LearnItem> learnlist;
 
@@ -71,7 +72,7 @@ void InputWindow::on_button_ProcessData_released()
         }
         QString AllLearnData = learnfile.readAll();
         qDebug() << AllLearnData;
-        if (learnfile.open()) learnfile.close();
+        if (learnfile.isOpen()) learnfile.close();
             //makes a vector list of all the data in the learnfile provided
         while (!AllLearnData.isEmpty()) {
             QString tmpname;
@@ -129,11 +130,19 @@ void InputWindow::on_button_ProcessData_released()
         }
         QString AllCalData = calfile.readAll();
         qDebug() << AllCalData;
-        if (calfile.open()) calfile.close();
+        if (calfile.isOpen()) calfile.close();
 
+        int freedays = AllCalData.count("FREE");     //Find the number of free daysW
+        qDebug() << "Free Days: " << freedays;
+        if (learnlist.size() > freedays) {    //If there are less free days than there are learnitems, cut some least important learn items
+            for (int i = 0; i < freeday; i++) {
+                learnlist.pop_back();
+            }
+        }
+        for (int i = 0; i < learnlist.size(); i++) {  //notdonewith this loop
+            AllCalData.replace("FREE", learnlist[i].getName());  //wont work
+        }
 
-        //Fined the number of free days
-        //If there are less free days than there are learnitems, cut some least important learn items
         //Assign each item once in a random location
         //take the remaining and assign the top half again to any free space
         //if there are still free spots assign the top 1/4 to them
