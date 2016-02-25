@@ -2,8 +2,10 @@
 #include <QApplication>
 #include "learnitem.h"
 #include <QVector>
+#include <QString>
 
 QVector<LearnItem> learnlist;
+QString FullCalendar;
 
 int main(int argc, char *argv[])
 {

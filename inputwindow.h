@@ -26,6 +26,8 @@ private slots:
 
     void on_button_ProcessData_released();
 
+    void on_button_MakeSchedule_released();
+
 private:
     Ui::InputWindow *ui;
 };

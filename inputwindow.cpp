@@ -8,8 +8,10 @@
 #include "learnitem.h"
 #include "availabilitycalendar.h"
 #include <random>
+#include <QTextStream>
 
 extern QVector<LearnItem> learnlist;
+extern QString FullCalendar;
 
 InputWindow::InputWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -121,7 +123,7 @@ void InputWindow::on_button_ProcessData_released()
             qDebug() << learnlist[i].getPriority() << " | " << learnlist[i].getName();
         }
         //PROCESS SCHEDULE FILE
-        AvailabilityCalendar calendar[7][24];
+ //       AvailabilityCalendar calendar[7][24];
         QString filename2 = (ui->lineEdit_csvPathForSchedule->text());
         qDebug() << "Your schedule file is " << filename2;
         QFile calfile(filename2);
@@ -135,21 +137,81 @@ void InputWindow::on_button_ProcessData_released()
         int freedays = AllCalData.count("FREE");     //Find the number of free daysW
         qDebug() << "Free Days: " << freedays;
         if (learnlist.size() > freedays) {    //If there are less free days than there are learnitems, cut some least important learn items
-            for (int i = 0; i < freeday; i++) {
+            for (int i = 0; i < freedays; i++) {
                 learnlist.pop_back();
             }
         }
-        for (int i = 0; i < learnlist.size(); i++) {  //notdonewith this loop
-            AllCalData.replace("FREE", learnlist[i].getName());  //wont work
+        for (int i = 0; i < learnlist.size(); i++) {
+            int randomarea = rand() % freedays + 1;
+            qDebug() << "Random Area: " << randomarea;
+            int currentpos = 0;
+            for (int j = 0; j < randomarea; j++) {
+                if (currentpos == 0) currentpos = AllCalData.indexOf("FREE");
+                else currentpos = AllCalData.indexOf("FREE", currentpos+4);
+            }
+            AllCalData.replace(currentpos, 4, learnlist[i].getName());
+            freedays--;
         }
+        qDebug() << AllCalData;
 
-        //Assign each item once in a random location
-        //take the remaining and assign the top half again to any free space
-        //if there are still free spots assign the top 1/4 to them
-        //if there are still free spots assign the top 1/8 to them
-        //if there are still free spots assign the top 1/8 to them again //repeat till none left
-
+        do {
+            if (freedays > 0) {
+                int tmp = (learnlist.size() / 2);  //take the remaining and assign the top half again to any free space
+                for (int i = 0; i < tmp; i++) {
+                    learnlist.pop_back();
+                }
+                qDebug() << " top half of learn list";
+                for (int i = 0; i < learnlist.size(); i++) {
+                    qDebug() << learnlist[i].getPriority() << " | " << learnlist[i].getName();
+                }
+                if (learnlist.size() > freedays) {  //If there are less free days than there are learnitems, cut some least important learn items
+                    for (int i = 0; i < freedays; i++) {
+                        learnlist.pop_back();
+                    }
+                }
+                for (int i = 0; i < learnlist.size(); i++) {
+                    int randomarea = rand() % freedays + 1;
+                    qDebug() << "Random Area: " << randomarea;
+                    int currentpos = 0;
+                    for (int j = 0; j < randomarea; j++) {
+                        if (currentpos == 0) currentpos = AllCalData.indexOf("FREE");
+                        else currentpos = AllCalData.indexOf("FREE", currentpos+4);
+                    }
+                    AllCalData.replace(currentpos, 4, learnlist[i].getName());
+                    freedays--;
+                }
+            }
+            qDebug() << AllCalData;
+        } while (freedays > 0);   //repeat till none left
         //we will now have a filled out availability map
-
+        FullCalendar = AllCalData;
+        if(FullCalendar.size() > 10) {
+            QMessageBox success;
+            success.setText("Okay looks processed. <br>Try the create CSV button.");
+            success.setWindowTitle("Good To Go");
+            success.exec();
+        }
     }
 }
+
+void InputWindow::on_button_MakeSchedule_released()
+{
+    QString NewSchedule = QFileDialog::getSaveFileName(this, tr("Save File"), QString(),
+                tr("CSV File (*.csv)"));
+    QFile CSVFile(NewSchedule);
+    if(!CSVFile.open(QIODevice::WriteOnly)) {
+        QMessageBox::critical(this, tr("Error"), tr("Could not open file"));
+        return;
+    }
+    QTextStream out(&CSVFile);
+    out << FullCalendar;
+    qDebug() << "Wrote to " << NewSchedule;
+    CSVFile.close();
+
+}
+
+  //  CSVFile.write(FullCalendar);
+//    CSVFile.open(NewSchedule, QIODevice::WriteOnly));
+
+ //   int endOfLinePos = NewSchedule.indexOf('\n');
+ //   FullCalendar.replace(0, endOfLinePos+1, "");
