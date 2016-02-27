@@ -22,3 +22,8 @@ HEADERS  += inputwindow.h \
 FORMS    += inputwindow.ui
 
 CONFIG += c++11
+
+RESOURCES += \
+    resources.qrc
+
+win32:RC_ICONS += logo-gimpfile.ico

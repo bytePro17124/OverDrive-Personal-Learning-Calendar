@@ -161,9 +161,9 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;... &lt;/span&gt;&lt;span style=&quot; font-size:7pt;&quot;&gt;filled until 11PM*&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:10pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:10pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;Enter &lt;/span&gt;&lt;span style=&quot; font-size:10pt; font-weight:600;&quot;&gt;'Free'&lt;/span&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt; or &lt;/span&gt;&lt;span style=&quot; font-size:10pt; font-weight:600;&quot;&gt;'Busy'&lt;/span&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt; in the corresponding fields.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;Enter &lt;/span&gt;&lt;span style=&quot; font-size:10pt; font-weight:600;&quot;&gt;'FREE'&lt;/span&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt; or &lt;/span&gt;&lt;span style=&quot; font-size:10pt; font-weight:600;&quot;&gt;'BUSY'&lt;/span&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt; in the corresponding fields.&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;Empty Cells will be assumed&lt;/span&gt;&lt;span style=&quot; font-size:10pt; font-weight:600;&quot;&gt; 'Free'.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;Empty Cells will be assumed&lt;/span&gt;&lt;span style=&quot; font-size:10pt; font-weight:600;&quot;&gt; 'BUSY'.&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:12pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
         </property>
        </widget>
@@ -243,21 +243,13 @@ p, li { white-space: pre-wrap; }
      <layout class="QHBoxLayout" name="horizontalLayout">
       <item>
        <widget class="QPushButton" name="button_Quit">
-        <property name="text">
-         <string>Quit</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="button_MakeOutlookFile">
         <property name="font">
          <font>
-          <family>MS Serif</family>
-          <pointsize>10</pointsize>
+          <pointsize>13</pointsize>
          </font>
         </property>
         <property name="text">
-         <string>Make Outlook Calendar File</string>
+         <string>Quit</string>
         </property>
        </widget>
       </item>
@@ -265,12 +257,12 @@ p, li { white-space: pre-wrap; }
        <widget class="QPushButton" name="button_MakeSchedule">
         <property name="font">
          <font>
-          <family>MS Serif</family>
-          <pointsize>10</pointsize>
+          <family>MS Shell Dlg 2</family>
+          <pointsize>13</pointsize>
          </font>
         </property>
         <property name="text">
-         <string>Make .csv schedule file</string>
+         <string>Create .CSV File</string>
         </property>
        </widget>
       </item>
@@ -324,9 +316,6 @@ p, li { white-space: pre-wrap; }
   <tabstop>textBrowser_InfoAboutLearnItems</tabstop>
   <tabstop>lineEdit_csvPathForItems</tabstop>
   <tabstop>lineEdit_csvPathForSchedule</tabstop>
-  <tabstop>button_MakeOutlookFile</tabstop>
-  <tabstop>button_MakeSchedule</tabstop>
-  <tabstop>button_Quit</tabstop>
  </tabstops>
  <resources/>
  <connections/>

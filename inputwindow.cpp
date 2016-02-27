@@ -207,11 +207,9 @@ void InputWindow::on_button_MakeSchedule_released()
     out << FullCalendar;
     qDebug() << "Wrote to " << NewSchedule;
     CSVFile.close();
+    QMessageBox success;
+    success.setText("File has been written to your chosen location.");
+    success.setWindowTitle("Good To Go");
+    success.exec();
 
 }
-
-  //  CSVFile.write(FullCalendar);
-//    CSVFile.open(NewSchedule, QIODevice::WriteOnly));
-
- //   int endOfLinePos = NewSchedule.indexOf('\n');
- //   FullCalendar.replace(0, endOfLinePos+1, "");
