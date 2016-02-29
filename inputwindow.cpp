@@ -200,7 +200,7 @@ void InputWindow::on_button_MakeSchedule_released()
                 tr("CSV File (*.csv)"));
     QFile CSVFile(NewSchedule);
     if(!CSVFile.open(QIODevice::WriteOnly)) {
-        QMessageBox::critical(this, tr("Error"), tr("Could not open file"));
+        QMessageBox::critical(this, tr("Unfinished business"), tr("*csv file has not been saved."));
         return;
     }
     QTextStream out(&CSVFile);
@@ -209,6 +209,62 @@ void InputWindow::on_button_MakeSchedule_released()
     CSVFile.close();
     QMessageBox success;
     success.setText("File has been written to your chosen location.");
+    success.setWindowTitle("Good To Go");
+    success.exec();
+
+}
+
+void InputWindow::on_button_MakeiCalFile_released()
+{
+    QString NewSchedule = QFileDialog::getSaveFileName(this, tr("Save File"), QString(), tr("iCal File (*.ical)"));
+    QFile iCalFile(NewSchedule);
+    if (!iCalFile.open(QIODevice::WriteOnly)) {
+        QMessageBox::critical(this, tr("Unfinished business"), tr("*ical file has not been saved."));
+        return;
+    }
+    QTextStream out(&iCalFile);
+
+    out << "BEGIN:VCALENDAR\n"
+        << "METHOD:PUBLISH\n"
+        << "VERSION:2.0\n"
+        << "PROID:-\n";
+
+
+                        //loop this part for each event
+    out << "BEGIN:VEVENT\n"
+        << "SUMMARY:";
+        //name of event then a newline
+    out << "testsummary\n";   //test
+
+    out << "UID:";
+        //uniqueID then newline
+    out << "123456789\n";     //test
+
+    out << "DTSTART:";
+        //start time then a newline
+    out << "20160310T090000\n";
+
+    out << "DTEND:";
+        //end time then a newline
+    out << "20160310T100000\n";
+
+    out << "BEING:VALARM\n"
+        << "TRIGGER:-PT15M\n"
+        << "REPEAT:1\n"
+        << "DURATION:PT15M\n"
+        << "ACTION:DISPLAY\n";
+
+    out << "END:VEVENT\n";
+                        //end loop
+
+        //finish out calendar file
+    out << "END:VCALENDAR\n";
+
+
+    qDebug() << "Wrote to " << NewSchedule;
+    iCalFile.close();
+    QMessageBox success;
+    success.setText("Test File has been written to your chosen location.");
     success.setWindowTitle("Good To Go");
     success.exec();
 

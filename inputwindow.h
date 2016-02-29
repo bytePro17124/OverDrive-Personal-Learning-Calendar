@@ -28,6 +28,8 @@ private slots:
 
     void on_button_MakeSchedule_released();
 
+    void on_button_MakeiCalFile_released();
+
 private:
     Ui::InputWindow *ui;
 };
