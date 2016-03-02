@@ -216,10 +216,10 @@ void InputWindow::on_button_MakeSchedule_released()
 
 void InputWindow::on_button_MakeiCalFile_released()
 {
-    QString NewSchedule = QFileDialog::getSaveFileName(this, tr("Save File"), QString(), tr("iCal File (*.ical)"));
+    QString NewSchedule = QFileDialog::getSaveFileName(this, tr("Save File"), QString(), tr("ics File (*.ics)"));
     QFile iCalFile(NewSchedule);
     if (!iCalFile.open(QIODevice::WriteOnly)) {
-        QMessageBox::critical(this, tr("Unfinished business"), tr("*ical file has not been saved."));
+        QMessageBox::critical(this, tr("Unfinished business"), tr("*ics file has not been saved."));
         return;
     }
     QTextStream out(&iCalFile);
