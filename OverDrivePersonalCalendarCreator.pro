@@ -26,4 +26,4 @@ CONFIG += c++11
 RESOURCES += \
     resources.qrc
 
-win32:RC_ICONS += logo-gimpfile.ico
+win32:RC_ICONS += Alpha-Logo.ico

@@ -9,6 +9,7 @@
 #include "availabilitycalendar.h"
 #include <random>
 #include <QTextStream>
+#include <QDateTime>
 
 extern QVector<LearnItem> learnlist;
 extern QString FullCalendar;
@@ -192,6 +193,12 @@ void InputWindow::on_button_ProcessData_released()
             success.exec();
         }
     }
+
+//    QDateTime dateNow;
+//    dateNow.setDate(QDate::currentDate());
+//    dateNow.setTime(QTime::currentTime());m
+//    qDebug() << "Today's Date: " << dateNow.toString();
+
 }
 
 void InputWindow::on_button_MakeSchedule_released()

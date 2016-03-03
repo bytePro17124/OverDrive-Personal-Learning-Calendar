@@ -1,5 +1,6 @@
 <RCC>
     <qresource prefix="/images">
-        <file>logo-gimpfile.jpg</file>
+        <file>Alpha-Logo.ico</file>
+        <file>Alpha-Logo.png</file>
     </qresource>
 </RCC>
