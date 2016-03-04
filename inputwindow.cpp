@@ -10,6 +10,7 @@
 #include <random>
 #include <QTextStream>
 #include <QDateTime>
+#include <QHostInfo>
 
 extern QVector<LearnItem> learnlist;
 extern QString FullCalendar;
@@ -19,6 +20,8 @@ InputWindow::InputWindow(QWidget *parent) :
     ui(new Ui::InputWindow)
 {
     ui->setupUi(this);
+    dtStamp.setDate(QDate::currentDate());
+    dtStamp.setTime(QTime::currentTime());
 }
 
 InputWindow::~InputWindow()
@@ -196,7 +199,7 @@ void InputWindow::on_button_ProcessData_released()
 
 //    QDateTime dateNow;
 //    dateNow.setDate(QDate::currentDate());
-//    dateNow.setTime(QTime::currentTime());m
+//    dateNow.setTime(QTime::currentTime());
 //    qDebug() << "Today's Date: " << dateNow.toString();
 
 }
@@ -223,6 +226,11 @@ void InputWindow::on_button_MakeSchedule_released()
 
 void InputWindow::on_button_MakeiCalFile_released()
 {
+    /* << learn item name or something*/
+    /* << learn item date-time end*/
+    /* << learn item date-time start*/
+    /* << learn item name here */
+
     QString NewSchedule = QFileDialog::getSaveFileName(this, tr("Save File"), QString(), tr("ics File (*.ics)"));
     QFile iCalFile(NewSchedule);
     if (!iCalFile.open(QIODevice::WriteOnly)) {
@@ -231,38 +239,55 @@ void InputWindow::on_button_MakeiCalFile_released()
     }
     QTextStream out(&iCalFile);
 
+    //This part creates the actual openable file for Outlook or iCalendar
+
+            //default header for ics file - testing currently
     out << "BEGIN:VCALENDAR\n"
-        << "METHOD:PUBLISH\n"
+        << "PRODID:-//Microsoft Corporation//Outlook 15.0 MIMEDIR//EN\n"
         << "VERSION:2.0\n"
-        << "PROID:-\n";
+        << "METHOD:PUBLISH\n";
+//    out << "X-MS-OLK-FORCEINSPECTOROPEN:TRUE\n";
 
+            //Time Zone - Eastern Only for initial testing, user chosen later
+    out << "BEGIN:VTIMEZONE\n"
+        << "TZID:Eastern Standard Time\n"
+        << "BEGIN:STANDARD\n"
+        << "DTSTART:16011104T020000\n"
+        << "RRULE:FREQ=YEARLY;BYDAY=1SU;BYMONTH=11\n"
+        << "TZOFFSETFROM:-0400\n"
+        << "TZOFFSETTO:-0500\n"
+        << "END:STANDARD\n";
 
-                        //loop this part for each event
+            //Daylight Savings Time Specifications in Eastern time zone
+    out << "BEGIN:DAYLIGHT\n"
+        << "DTSTART:16010311T020000\n"
+        << "RRULE:FREQ=YEARLY;BYDAY=2SU;BYMONTH=3\n"
+        << "TZOFFSETFROM:-0500\n"
+        << "TZOFFSETTO:-0400\n"
+        << "END:DAYLIGHT\n"
+        << "END:VTIMEZONE\n";
+
+             //The Events Part - Loop for each event to schedule
     out << "BEGIN:VEVENT\n"
-        << "SUMMARY:";
-        //name of event then a newline
-    out << "testsummary\n";   //test
-
-    out << "UID:";
-        //uniqueID then newline
-    out << "123456789\n";     //test
-
-    out << "DTSTART:";
-        //start time then a newline
-    out << "20160310T090000\n";
-
-    out << "DTEND:";
-        //end time then a newline
-    out << "20160310T100000\n";
-
-    out << "BEING:VALARM\n"
-        << "TRIGGER:-PT15M\n"
-        << "REPEAT:1\n"
-        << "DURATION:PT15M\n"
+        << "CLASS:PUBLIC\n";
+    QDateTime utcStamp(QDateTime::currentDateTimeUtc());
+    out << "CREATED:" << utcStamp.toString("yyyyMMddTHHmmsszzzZ") << "\n"
+        << "DESCRIPTION:" /* << optional description*/ << "\n"
+        << "DTEND;TZID=" /* << learn-item date-time end*/ << "\n"
+        << "DTSTAMP:" << utcStamp.toString("yyyyMMddTHHmmsszzzZ") << "\n"
+        << "DTSTART;TZID=" /* << learn-item date-time start*/ << "\n"
+        << "LAST-MODIFIED:" << utcStamp.toString("yyyyMMddTHHmmsszzzZ") << "\n"
+        << "PRIORITY:0\n"
+        << "SEQUENCE:0\n"
+        << "SUMMARY;LANGUAGE=en-us:" /* << learn-item name here */ << "\n"
+        << "TRANSP:TRANSPARENT\n";
+    out << "UID:" << utcStamp.toString("yyyyMMddTHHmmsszzzZ") << "@" << QHostInfo::localHostName() << "\n";
+        //Alert type and setup - must be part of VEVENT so make part of loop 10 min popup for now
+    out << "BEGIN:VALARM\n"
+        << "TRIGGER:-PT10M\n"
         << "ACTION:DISPLAY\n";
-
     out << "END:VEVENT\n";
-                        //end loop
+            //end loop
 
         //finish out calendar file
     out << "END:VCALENDAR\n";

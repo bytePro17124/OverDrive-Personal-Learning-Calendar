@@ -2,6 +2,7 @@
 #define INPUTWINDOW_H
 
 #include <QMainWindow>
+#include <QDate>
 
 namespace Ui {
 class InputWindow;
@@ -32,6 +33,9 @@ private slots:
 
 private:
     Ui::InputWindow *ui;
+    QDate startingMonday;
+    QDateTime dtStamp;
+
 };
 
 #endif // INPUTWINDOW_H
