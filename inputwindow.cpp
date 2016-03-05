@@ -51,6 +51,7 @@ InputWindow::InputWindow(QWidget *parent) :
             break;
         case 2018: ui->combo_Year_1eq2016->setCurrentIndex(3);
             break;
+            //add the rest later
         default: ui->combo_Year_1eq2016->setCurrentIndex(6);
         }
     }
@@ -58,6 +59,7 @@ InputWindow::InputWindow(QWidget *parent) :
         // set week combobox
 
     ui->combo_WeekOfYearNumber1to52->setCurrentIndex(((month_int * 4) - 2) + (day_int / 6));
+    //make this algo better later
 
 }
 
@@ -282,14 +284,50 @@ void InputWindow::on_button_MakeiCalFile_released()
     }
     QTextStream out(&iCalFile);
 
-    //figure out which Monday we are starting on
-    //loop to go through the file and stop at item found or newline
-    //if item found, get it and stamp the time of start and end
+    //figure out which Monday we are starting on - DONE in test for weeks 10 and 11 in 2016
+
+
+    //loop to go through the string and stop at item found or newline
+    bool EndOfString = false;
+    QString searchstringtemp;
+    int indexholder = 0;
+    do {
+        for (int i = 1; i <= 24; i++) {
+            switch (i) {
+            case 1: searchstringtemp = "12AM";
+            case 2: searchstringtemp = "1AM";
+            case 3: searchstringtemp = "2AM";
+            case 4: searchstringtemp = "3AM";
+            case 5: searchstringtemp = "4AM";
+            case 6: searchstringtemp = "5AM";
+            case 7: searchstringtemp = "6AM";
+            case 8: searchstringtemp = "7AM";
+            case 9: searchstringtemp = "8AM";
+            case 10: searchstringtemp = "9AM";
+            case 11: searchstringtemp = "10AM";
+            case 12: searchstringtemp = "11AM";
+            case 13: searchstringtemp = "12PM";
+            case 14: searchstringtemp = "1PM";
+            case 15: searchstringtemp = "2PM";
+            case 16: searchstringtemp = "3PM";
+            case 17: searchstringtemp = "4PM";
+            case 18: searchstringtemp = "5PM";
+            case 19: searchstringtemp = "6PM";
+            case 20: searchstringtemp = "7PM";
+            case 21: searchstringtemp = "8PM";
+            case 22: searchstringtemp = "9PM";
+            case 23: searchstringtemp = "10PM";
+            case 24: searchstringtemp = "11PM";
+            }
+
+            int line = FullCalendar.indexOf(searchstringtmp, indexholder);
+        }
+    } while (!EndOfString);
+    //if item found, save it and the start time to vector maps
     //if newline is found, increment stamp and move to next lie to process
     //after end, loop vevent and valarm and populate the 4 fields.
     //test
 
-    //come back to this
   //  if (ui->combo_WeekOfYearNumber1to52->get
 
     //This part creates the actual openable file for Outlook or iCalendar
