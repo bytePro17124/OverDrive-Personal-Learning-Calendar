@@ -11,6 +11,7 @@
 #include <QTextStream>
 #include <QDateTime>
 #include <QHostInfo>
+#include <vector>
 
 extern QVector<LearnItem> learnlist;
 extern QString FullCalendar;
@@ -32,7 +33,7 @@ InputWindow::~InputWindow()
 void InputWindow::on_lineEdit_csvPathForItems_selectionChanged()
 {
     QString filename = QFileDialog::getOpenFileName(this, tr("Open CSV"),\
-                                            "c:/users", tr("CSV Files(*.csv)"));
+                                                    "c:/users", tr("CSV Files(*.csv)"));
     ui->lineEdit_csvPathForItems->setText(filename);
 }
 
@@ -40,7 +41,7 @@ void InputWindow::on_lineEdit_csvPathForItems_selectionChanged()
 void InputWindow::on_lineEdit_csvPathForSchedule_selectionChanged()
 {
     QString filename = QFileDialog::getOpenFileName(this, tr("Open CSV"),\
-                                            "c:/users", tr("CSV Files(*.csv)"));
+                                                    "c:/users", tr("CSV Files(*.csv)"));
     ui->lineEdit_csvPathForSchedule->setText(filename);
 }
 
@@ -79,7 +80,7 @@ void InputWindow::on_button_ProcessData_released()
         QString AllLearnData = learnfile.readAll();
         qDebug() << AllLearnData;
         if (learnfile.isOpen()) learnfile.close();
-            //makes a vector list of all the data in the learnfile provided
+        //makes a vector list of all the data in the learnfile provided
         while (!AllLearnData.isEmpty()) {
             QString tmpname;
             int index = AllLearnData.indexOf(',');
@@ -127,7 +128,6 @@ void InputWindow::on_button_ProcessData_released()
             qDebug() << learnlist[i].getPriority() << " | " << learnlist[i].getName();
         }
         //PROCESS SCHEDULE FILE
- //       AvailabilityCalendar calendar[7][24];
         QString filename2 = (ui->lineEdit_csvPathForSchedule->text());
         qDebug() << "Your schedule file is " << filename2;
         QFile calfile(filename2);
@@ -138,7 +138,7 @@ void InputWindow::on_button_ProcessData_released()
         qDebug() << AllCalData;
         if (calfile.isOpen()) calfile.close();
 
-        int freedays = AllCalData.count("FREE");     //Find the number of free daysW
+        int freedays = AllCalData.count("FREE");     //Find the number of free days
         qDebug() << "Free Days: " << freedays;
         if (learnlist.size() > freedays) {    //If there are less free days than there are learnitems, cut some least important learn items
             for (int i = 0; i < freedays; i++) {
@@ -194,20 +194,21 @@ void InputWindow::on_button_ProcessData_released()
             success.setText("Okay looks processed. <br>Try the create CSV button.");
             success.setWindowTitle("Good To Go");
             success.exec();
+            learnlist.clear();
         }
     }
 
-//    QDateTime dateNow;
-//    dateNow.setDate(QDate::currentDate());
-//    dateNow.setTime(QTime::currentTime());
-//    qDebug() << "Today's Date: " << dateNow.toString();
+    //    QDateTime dateNow;
+    //    dateNow.setDate(QDate::currentDate());
+    //    dateNow.setTime(QTime::currentTime());
+    //    qDebug() << "Today's Date: " << dateNow.toString();
 
 }
 
 void InputWindow::on_button_MakeSchedule_released()
 {
     QString NewSchedule = QFileDialog::getSaveFileName(this, tr("Save File"), QString(),
-                tr("CSV File (*.csv)"));
+                                                       tr("CSV File (*.csv)"));
     QFile CSVFile(NewSchedule);
     if(!CSVFile.open(QIODevice::WriteOnly)) {
         QMessageBox::critical(this, tr("Unfinished business"), tr("*csv file has not been saved."));
@@ -226,29 +227,41 @@ void InputWindow::on_button_MakeSchedule_released()
 
 void InputWindow::on_button_MakeiCalFile_released()
 {
-    /* << learn item name or something*/
-    /* << learn item date-time end*/
-    /* << learn item date-time start*/
-    /* << learn item name here */
+    /* << DescriptionOfItem */
+    /* << End time (1 hour after start) */
+    /* << Start time */
+    /* << SummaryOfItem */
+    //  format of the times:  yyyyMMddTHHmmss
 
-    QString NewSchedule = QFileDialog::getSaveFileName(this, tr("Save File"), QString(), tr("ics File (*.ics)"));
-    QFile iCalFile(NewSchedule);
+    std::vector<QString> DescriptionOfItem;
+    std::vector<QDateTime> StartTimeOfItem;
+    std::vector<QString> SummaryOfItem;
+
+    QString NewScheduleFileName = QFileDialog::getSaveFileName(this, tr("Save File"), QString(), tr("ics File (*.ics)"));
+    QFile iCalFile(NewScheduleFileName);
     if (!iCalFile.open(QIODevice::WriteOnly)) {
-        QMessageBox::critical(this, tr("Unfinished business"), tr("*ics file has not been saved."));
+        QMessageBox::critical(this, tr("Unfinished business"), tr(".ics file has not been saved."));
         return;
     }
     QTextStream out(&iCalFile);
 
+    //figure out which Monday we are starting on
+    //loop to go through the file and stop at item found or newline
+    //if item found, get it and stamp the time of start and end
+    //if newline is found, increment stamp and move to next lie to process
+    //after end, loop vevent and valarm and populate the 4 fields.
+    //test
+
     //This part creates the actual openable file for Outlook or iCalendar
 
-            //default header for ics file - testing currently
+    //default header for ics file - testing currently
     out << "BEGIN:VCALENDAR\n"
         << "PRODID:-//Microsoft Corporation//Outlook 15.0 MIMEDIR//EN\n"
         << "VERSION:2.0\n"
         << "METHOD:PUBLISH\n";
-//    out << "X-MS-OLK-FORCEINSPECTOROPEN:TRUE\n";
+    //out << "X-MS-OLK-FORCEINSPECTOROPEN:TRUE\n";
 
-            //Time Zone - Eastern Only for initial testing, user chosen later
+    //Time Zone - Eastern Only for initial testing, user chosen later
     out << "BEGIN:VTIMEZONE\n"
         << "TZID:Eastern Standard Time\n"
         << "BEGIN:STANDARD\n"
@@ -258,7 +271,7 @@ void InputWindow::on_button_MakeiCalFile_released()
         << "TZOFFSETTO:-0500\n"
         << "END:STANDARD\n";
 
-            //Daylight Savings Time Specifications in Eastern time zone
+    //Daylight Savings Time Specifications in Eastern time zone
     out << "BEGIN:DAYLIGHT\n"
         << "DTSTART:16010311T020000\n"
         << "RRULE:FREQ=YEARLY;BYDAY=2SU;BYMONTH=3\n"
@@ -267,7 +280,7 @@ void InputWindow::on_button_MakeiCalFile_released()
         << "END:DAYLIGHT\n"
         << "END:VTIMEZONE\n";
 
-             //The Events Part - Loop for each event to schedule
+    //The Events Part - Loop for each event to schedule
     out << "BEGIN:VEVENT\n"
         << "CLASS:PUBLIC\n";
     QDateTime utcStamp(QDateTime::currentDateTimeUtc());
@@ -282,18 +295,17 @@ void InputWindow::on_button_MakeiCalFile_released()
         << "SUMMARY;LANGUAGE=en-us:" /* << learn-item name here */ << "\n"
         << "TRANSP:TRANSPARENT\n";
     out << "UID:" << utcStamp.toString("yyyyMMddTHHmmsszzzZ") << "@" << QHostInfo::localHostName() << "\n";
-        //Alert type and setup - must be part of VEVENT so make part of loop 10 min popup for now
+
+    //Alert type and setup - must be part of VEVENT so make part of loop 10 min popup for now
     out << "BEGIN:VALARM\n"
         << "TRIGGER:-PT10M\n"
         << "ACTION:DISPLAY\n";
-    out << "END:VEVENT\n";
-            //end loop
 
-        //finish out calendar file
-    out << "END:VCALENDAR\n";
+    out << "END:VEVENT\n";          //end loop
+    out << "END:VCALENDAR\n";       //finish out calendar file
 
 
-    qDebug() << "Wrote to " << NewSchedule;
+    qDebug() << "Wrote to " << NewScheduleFileName;
     iCalFile.close();
     QMessageBox success;
     success.setText("Test File has been written to your chosen location.");
