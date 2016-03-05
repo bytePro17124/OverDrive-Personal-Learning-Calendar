@@ -31,11 +31,16 @@ private slots:
 
     void on_button_MakeiCalFile_released();
 
+    void on_combo_WeekOfYearNumber1to52_currentIndexChanged(int index);
+
 private:
     Ui::InputWindow *ui;
     QDate startingMonday;
     QDateTime dtStamp;
-
+    int year_int;
+    int month_int;
+    int day_int;
+    QDate setMonday(const int&, const int&);
 };
 
 #endif // INPUTWINDOW_H

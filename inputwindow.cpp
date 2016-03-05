@@ -12,6 +12,8 @@
 #include <QDateTime>
 #include <QHostInfo>
 #include <vector>
+#include <boost/lexical_cast.hpp>
+#include <string>
 
 extern QVector<LearnItem> learnlist;
 extern QString FullCalendar;
@@ -23,6 +25,40 @@ InputWindow::InputWindow(QWidget *parent) :
     ui->setupUi(this);
     dtStamp.setDate(QDate::currentDate());
     dtStamp.setTime(QTime::currentTime());
+    //move week and year to the next monday index.
+    std::string tmpdate = dtStamp.toString("yyyyMMddTHHmmss").toStdString();
+    std::string year = "";
+    for (int i = 0; i < 4; i++) {
+       year += tmpdate[i];
+    }
+    year_int = boost::lexical_cast<int>(year);
+    std::string month;
+    month += tmpdate[4];
+    month += tmpdate[5];
+    month_int = boost::lexical_cast<int>(month);
+    std::string day;
+    day += tmpdate[6];
+    day += tmpdate[7];
+    day_int = boost::lexical_cast<int>(day);
+    qDebug() << year_int;
+    qDebug() << month_int;
+    qDebug() << day_int;
+
+    //set year combobox
+    if (year_int > 2016) {
+        switch (year_int) {
+        case 2017: ui->combo_Year_1eq2016->setCurrentIndex(2);
+            break;
+        case 2018: ui->combo_Year_1eq2016->setCurrentIndex(3);
+            break;
+        default: ui->combo_Year_1eq2016->setCurrentIndex(6);
+        }
+    }
+
+        // set week combobox
+
+    ui->combo_WeekOfYearNumber1to52->setCurrentIndex(((month_int * 4) - 2) + (day_int / 6));
+
 }
 
 InputWindow::~InputWindow()
@@ -237,6 +273,7 @@ void InputWindow::on_button_MakeiCalFile_released()
     std::vector<QDateTime> StartTimeOfItem;
     std::vector<QString> SummaryOfItem;
 
+
     QString NewScheduleFileName = QFileDialog::getSaveFileName(this, tr("Save File"), QString(), tr("ics File (*.ics)"));
     QFile iCalFile(NewScheduleFileName);
     if (!iCalFile.open(QIODevice::WriteOnly)) {
@@ -251,6 +288,9 @@ void InputWindow::on_button_MakeiCalFile_released()
     //if newline is found, increment stamp and move to next lie to process
     //after end, loop vevent and valarm and populate the 4 fields.
     //test
+
+    //come back to this
+  //  if (ui->combo_WeekOfYearNumber1to52->get
 
     //This part creates the actual openable file for Outlook or iCalendar
 
@@ -312,4 +352,27 @@ void InputWindow::on_button_MakeiCalFile_released()
     success.setWindowTitle("Good To Go");
     success.exec();
 
+}
+
+void InputWindow::on_combo_WeekOfYearNumber1to52_currentIndexChanged(int index)
+{
+    startingMonday = setMonday(index, year_int);
+}
+
+QDate InputWindow::setMonday(const int & week, const int & year)
+{
+    int m, d;
+    switch (week) {
+    case 10:
+        m = 3;
+        d = 7;
+        break;
+    case 11:
+        m = 3;
+        d = 14;
+        break;
+    default:;
+    }
+    QDate tmpdate(year, m, d);
+    return tmpdate;
 }

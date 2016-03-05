@@ -285,7 +285,7 @@ p, li { white-space: pre-wrap; }
        </widget>
       </item>
       <item>
-       <widget class="QComboBox" name="comboBox">
+       <widget class="QComboBox" name="combo_WeekOfYearNumber1to52">
         <property name="font">
          <font>
           <pointsize>11</pointsize>
@@ -560,7 +560,7 @@ p, li { white-space: pre-wrap; }
        </widget>
       </item>
       <item>
-       <widget class="QComboBox" name="comboBox_2">
+       <widget class="QComboBox" name="combo_Year_1eq2016">
         <property name="font">
          <font>
           <pointsize>11</pointsize>
