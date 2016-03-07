@@ -33,6 +33,8 @@ private slots:
 
     void on_combo_WeekOfYearNumber1to52_currentIndexChanged(int index);
 
+    void on_combo_Year_1eq2016_currentIndexChanged(const QString &arg1);
+
 private:
     Ui::InputWindow *ui;
     QDate startingMonday;

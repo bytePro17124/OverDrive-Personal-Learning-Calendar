@@ -11,9 +11,7 @@
 #include <QTextStream>
 #include <QDateTime>
 #include <QHostInfo>
-#include <vector>
-#include <boost/lexical_cast.hpp>
-#include <string>
+#include <QVector>
 
 extern QVector<LearnItem> learnlist;
 extern QString FullCalendar;
@@ -25,41 +23,9 @@ InputWindow::InputWindow(QWidget *parent) :
     ui->setupUi(this);
     dtStamp.setDate(QDate::currentDate());
     dtStamp.setTime(QTime::currentTime());
-    //move week and year to the next monday index.
-    std::string tmpdate = dtStamp.toString("yyyyMMddTHHmmss").toStdString();
-    std::string year = "";
-    for (int i = 0; i < 4; i++) {
-       year += tmpdate[i];
-    }
-    year_int = boost::lexical_cast<int>(year);
-    std::string month;
-    month += tmpdate[4];
-    month += tmpdate[5];
-    month_int = boost::lexical_cast<int>(month);
-    std::string day;
-    day += tmpdate[6];
-    day += tmpdate[7];
-    day_int = boost::lexical_cast<int>(day);
-    qDebug() << year_int;
-    qDebug() << month_int;
-    qDebug() << day_int;
-
-    //set year combobox
-    if (year_int > 2016) {
-        switch (year_int) {
-        case 2017: ui->combo_Year_1eq2016->setCurrentIndex(2);
-            break;
-        case 2018: ui->combo_Year_1eq2016->setCurrentIndex(3);
-            break;
-            //add the rest later
-        default: ui->combo_Year_1eq2016->setCurrentIndex(6);
-        }
-    }
-
-        // set week combobox
-
-    ui->combo_WeekOfYearNumber1to52->setCurrentIndex(((month_int * 4) - 2) + (day_int / 6));
-    //make this algo better later
+    qDebug() << QDate::currentDate().weekNumber();
+    ui->combo_WeekOfYearNumber1to52->setCurrentIndex(QDate::currentDate().weekNumber()); //<-wish i would have saw this last night
+    //dont worry about setting the year for now, its fine.
 
 }
 
@@ -227,6 +193,7 @@ void InputWindow::on_button_ProcessData_released()
         } while (freedays > 0);   //repeat till none left
         //we will now have a filled out availability map
         FullCalendar = AllCalData;
+        ui->textBrowser_InfoAboutSchedule->setText(FullCalendar);
         if(FullCalendar.size() > 10) {
             QMessageBox success;
             success.setText("Okay looks processed. <br>Try the create CSV button.");
@@ -236,10 +203,6 @@ void InputWindow::on_button_ProcessData_released()
         }
     }
 
-    //    QDateTime dateNow;
-    //    dateNow.setDate(QDate::currentDate());
-    //    dateNow.setTime(QTime::currentTime());
-    //    qDebug() << "Today's Date: " << dateNow.toString();
 
 }
 
@@ -265,16 +228,11 @@ void InputWindow::on_button_MakeSchedule_released()
 
 void InputWindow::on_button_MakeiCalFile_released()
 {
-    /* << DescriptionOfItem */
-    /* << End time (1 hour after start) */
-    /* << Start time */
-    /* << SummaryOfItem */
     //  format of the times:  yyyyMMddTHHmmss
 
-    std::vector<QString> DescriptionOfItem;
-    std::vector<QDateTime> StartTimeOfItem;
-    std::vector<QString> SummaryOfItem;
-
+   // std::vector<QString> DescriptionOfItem;
+    QVector<QDateTime> StartTimeOfItem;
+    QVector<QString> SummaryOfItem;
 
     QString NewScheduleFileName = QFileDialog::getSaveFileName(this, tr("Save File"), QString(), tr("ics File (*.ics)"));
     QFile iCalFile(NewScheduleFileName);
@@ -288,47 +246,42 @@ void InputWindow::on_button_MakeiCalFile_released()
 
 
     //loop to go through the string and stop at item found or newline
-    bool EndOfString = false;
-    QString searchstringtemp;
-    int indexholder = 0;
-    do {
-        for (int i = 1; i <= 24; i++) {
-            switch (i) {
-            case 1: searchstringtemp = "12AM";
-            case 2: searchstringtemp = "1AM";
-            case 3: searchstringtemp = "2AM";
-            case 4: searchstringtemp = "3AM";
-            case 5: searchstringtemp = "4AM";
-            case 6: searchstringtemp = "5AM";
-            case 7: searchstringtemp = "6AM";
-            case 8: searchstringtemp = "7AM";
-            case 9: searchstringtemp = "8AM";
-            case 10: searchstringtemp = "9AM";
-            case 11: searchstringtemp = "10AM";
-            case 12: searchstringtemp = "11AM";
-            case 13: searchstringtemp = "12PM";
-            case 14: searchstringtemp = "1PM";
-            case 15: searchstringtemp = "2PM";
-            case 16: searchstringtemp = "3PM";
-            case 17: searchstringtemp = "4PM";
-            case 18: searchstringtemp = "5PM";
-            case 19: searchstringtemp = "6PM";
-            case 20: searchstringtemp = "7PM";
-            case 21: searchstringtemp = "8PM";
-            case 22: searchstringtemp = "9PM";
-            case 23: searchstringtemp = "10PM";
-            case 24: searchstringtemp = "11PM";
-            }
+    QDate tmpdatesetter;
+    QTime tmptimesetter(0, 0, 0);
+    QTime defaultTime(0, 0, 0);
+    QString tmpItemDescription;
+    for (int i = 1; i <= 24; i++) {
+        for (int DayOfWeek = 0; DayOfWeek < 7; DayOfWeek++) {
 
-            int line = FullCalendar.indexOf(searchstringtmp, indexholder);
+            //for each day of the week at this time slot check if anything is scheduled
+            // 0 = Monday
+
+            tmpItemDescription = FullCalendar.section(',', ((DayOfWeek +((i-1)*7)+8)), ((DayOfWeek +((i-1)*7)+8)));
+
+            if (!tmpItemDescription.contains("BUSY")) {
+
+                tmpdatesetter = startingMonday.addDays(DayOfWeek); //set day of week
+
+                switch (i) { //set time that item starts
+                case 1: tmptimesetter = defaultTime;
+                    break;
+                default:
+                    tmptimesetter = defaultTime;
+                    tmptimesetter = tmptimesetter.addSecs(60*60*(i-1));
+                }
+                SummaryOfItem.push_back(tmpItemDescription);
+
+                QDateTime tmpStartTime;
+                tmpStartTime.setDate(tmpdatesetter);
+                tmpStartTime.setTime(tmptimesetter);
+                StartTimeOfItem.push_back(tmpStartTime);
+            }
         }
-    } while (!EndOfString);
+    }
     //if item found, save it and the start time to vector maps
     //if newline is found, increment stamp and move to next lie to process
     //after end, loop vevent and valarm and populate the 4 fields.
     //test
-
-  //  if (ui->combo_WeekOfYearNumber1to52->get
 
     //This part creates the actual openable file for Outlook or iCalendar
 
@@ -338,7 +291,7 @@ void InputWindow::on_button_MakeiCalFile_released()
         << "VERSION:2.0\n"
         << "METHOD:PUBLISH\n";
     //out << "X-MS-OLK-FORCEINSPECTOROPEN:TRUE\n";
-
+    QString timezone = "\"Eastern Standard Time\"";
     //Time Zone - Eastern Only for initial testing, user chosen later
     out << "BEGIN:VTIMEZONE\n"
         << "TZID:Eastern Standard Time\n"
@@ -358,28 +311,33 @@ void InputWindow::on_button_MakeiCalFile_released()
         << "END:DAYLIGHT\n"
         << "END:VTIMEZONE\n";
 
-    //The Events Part - Loop for each event to schedule
+    //The Events Part - Loop for each event to schedule //duration 1hr to start
+   // auto j = SummaryOfItem.size();
+    for (int i = 0, j = SummaryOfItem.size(); i < j; i++) {
     out << "BEGIN:VEVENT\n"
         << "CLASS:PUBLIC\n";
     QDateTime utcStamp(QDateTime::currentDateTimeUtc());
     out << "CREATED:" << utcStamp.toString("yyyyMMddTHHmmsszzzZ") << "\n"
-        << "DESCRIPTION:" /* << optional description*/ << "\n"
-        << "DTEND;TZID=" /* << learn-item date-time end*/ << "\n"
+        //<< "DESCRIPTION:" /* << optional description*/ << "\n"
+        //<< "DTEND;TZID=" /* << learn-item date-time end*/ << "\n"
         << "DTSTAMP:" << utcStamp.toString("yyyyMMddTHHmmsszzzZ") << "\n"
-        << "DTSTART;TZID=" /* << learn-item date-time start*/ << "\n"
+        << "DTSTART;TZID=" << timezone << ":" << StartTimeOfItem[i].toString("yyyyMMddTHHmmss") /* << learn-item date-time start*/ << "\n"
+        << "DURATION:PT1H0M0S\n"
         << "LAST-MODIFIED:" << utcStamp.toString("yyyyMMddTHHmmsszzzZ") << "\n"
         << "PRIORITY:0\n"
         << "SEQUENCE:0\n"
-        << "SUMMARY;LANGUAGE=en-us:" /* << learn-item name here */ << "\n"
+        << "SUMMARY;LANGUAGE=en-us:" << SummaryOfItem[i] /* << learn-item name here */ << "\n"
         << "TRANSP:TRANSPARENT\n";
     out << "UID:" << utcStamp.toString("yyyyMMddTHHmmsszzzZ") << "@" << QHostInfo::localHostName() << "\n";
 
     //Alert type and setup - must be part of VEVENT so make part of loop 10 min popup for now
     out << "BEGIN:VALARM\n"
         << "TRIGGER:-PT10M\n"
-        << "ACTION:DISPLAY\n";
+        << "ACTION:DISPLAY\n"
+        << "END:VALARM\n"
+        << "END:VEVENT\n";          //end loop
+    }
 
-    out << "END:VEVENT\n";          //end loop
     out << "END:VCALENDAR\n";       //finish out calendar file
 
 
@@ -394,11 +352,13 @@ void InputWindow::on_button_MakeiCalFile_released()
 
 void InputWindow::on_combo_WeekOfYearNumber1to52_currentIndexChanged(int index)
 {
-    startingMonday = setMonday(index, year_int);
+    startingMonday = setMonday(index);
 }
 
 QDate InputWindow::setMonday(const int & week, const int & year)
 {
+    //use dayofweek(1-7:mon-sun) and day(1-31:dayofmonth) to help calculate
+        //the proper monday for any given year.
     int m, d;
     switch (week) {
     case 10:
@@ -413,4 +373,28 @@ QDate InputWindow::setMonday(const int & week, const int & year)
     }
     QDate tmpdate(year, m, d);
     return tmpdate;
+}
+
+void InputWindow::on_combo_Year_1eq2016_currentIndexChanged(const QString &arg1)
+{
+    //check if it is a 53 monday year and update the week combobox accordingly
+
+    int tmpyear = arg1.toInt();
+    switch (tmpyear) {
+    case 2018:
+        if (ui->combo_WeekOfYearNumber1to52->count() == 52) {
+            ui->combo_WeekOfYearNumber1to52->addItem("Week 53");
+        }
+        break;
+    case 2024:
+        if (ui->combo_WeekOfYearNumber1to52->count() == 52) {
+            ui->combo_WeekOfYearNumber1to52->addItem("Week 53");
+        }
+        break;
+    default:
+        if (ui->combo_WeekOfYearNumber1to52->count() > 52) {
+            qDebug() << "Trying to remove week 53 if it exists";
+            ui->combo_WeekOfYearNumber1to52->removeItem(ui->combo_WeekOfYearNumber1to52->count()-1);
+        }
+    }
 }
