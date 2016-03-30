@@ -29,7 +29,6 @@ private slots:
 
     void on_button_MakeiCalFile_released();
 
-
     void on_calendarWidget_DateOfStart_selectionChanged();
 
 private:

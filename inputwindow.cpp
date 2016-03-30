@@ -202,21 +202,29 @@ void InputWindow::on_button_ProcessData_released()
 
 void InputWindow::on_button_MakeSchedule_released()
 {
-    QString NewSchedule = QFileDialog::getSaveFileName(this, tr("Save File"), QString(),
-                                                       tr("CSV File (*.csv)"));
-    QFile CSVFile(NewSchedule);
-    if(!CSVFile.open(QIODevice::WriteOnly)) {
-        QMessageBox::critical(this, tr("Unfinished business"), tr("*csv file has not been saved."));
+    if (FullCalendar.size() < 20) {
+        QMessageBox process;
+        process.setText("Be sure to process your data first.");
+        process.setWindowTitle("Wait");
+        process.exec();
         return;
+    } else {
+        QString NewSchedule = QFileDialog::getSaveFileName(this, tr("Save File"), QString(),
+                                                           tr("CSV File (*.csv)"));
+        QFile CSVFile(NewSchedule);
+        if(!CSVFile.open(QIODevice::WriteOnly)) {
+            QMessageBox::critical(this, tr("Unfinished business"), tr("*csv file has not been saved."));
+            return;
+        }
+        QTextStream out(&CSVFile);
+        out << FullCalendar;
+        qDebug() << "Wrote to " << NewSchedule;
+        CSVFile.close();
+        QMessageBox success;
+        success.setText("File has been written to your chosen location.");
+        success.setWindowTitle("Good To Go");
+        success.exec();
     }
-    QTextStream out(&CSVFile);
-    out << FullCalendar;
-    qDebug() << "Wrote to " << NewSchedule;
-    CSVFile.close();
-    QMessageBox success;
-    success.setText("File has been written to your chosen location.");
-    success.setWindowTitle("Good To Go");
-    success.exec();
 
 }
 
