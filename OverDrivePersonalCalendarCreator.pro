@@ -26,7 +26,7 @@ CONFIG += c++11
 RESOURCES += \
     resources.qrc
 
-win32:RC_ICONS += Alpha-Logo.ico
+win32:RC_ICONS += Alpha-ICON.ico
 
 CONFIG += c++11
 
