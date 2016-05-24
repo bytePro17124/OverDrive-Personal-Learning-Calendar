@@ -25,11 +25,15 @@ private slots:
 
     void on_button_ProcessData_released();
 
-    void on_button_MakeSchedule_released();
+//    void on_button_MakeSchedule_released();
 
     void on_button_MakeiCalFile_released();
 
     void on_calendarWidget_DateOfStart_selectionChanged();
+
+    void on_actionAbout_triggered();
+
+    void on_actionReset_triggered();
 
 private:
     Ui::InputWindow *ui;

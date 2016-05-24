@@ -34,7 +34,7 @@ InputWindow::~InputWindow()
 
 void InputWindow::on_lineEdit_csvPathForItems_selectionChanged()
 {
-    QString filename = QFileDialog::getOpenFileName(this, tr("Open CSV"),\
+    QString filename = QFileDialog::getOpenFileName(this, tr("Open CSV that has your Learn Items"),\
                                                     "c:/users", tr("CSV Files(*.csv)"));
     ui->lineEdit_csvPathForItems->setText(filename);
 }
@@ -42,7 +42,7 @@ void InputWindow::on_lineEdit_csvPathForItems_selectionChanged()
 
 void InputWindow::on_lineEdit_csvPathForSchedule_selectionChanged()
 {
-    QString filename = QFileDialog::getOpenFileName(this, tr("Open CSV"),\
+    QString filename = QFileDialog::getOpenFileName(this, tr("Open CSV that has your Availability"),\
                                                     "c:/users", tr("CSV Files(*.csv)"));
     ui->lineEdit_csvPathForSchedule->setText(filename);
 }
@@ -71,9 +71,9 @@ void InputWindow::on_button_ProcessData_released()
         QString filename = (ui->lineEdit_csvPathForItems->text());
 //        qDebug() << "Your item file is " << filename;
         QFile learnfile(filename);
-//        if (!learnfile.open(QIODevice::ReadOnly | QIODevice::Text)) {
-//            qDebug() << learnfile.errorString();
-//        }
+        if (!learnfile.open(QIODevice::ReadOnly | QIODevice::Text)) {
+            qDebug() << learnfile.errorString();
+        }
         QString AllLearnData = learnfile.readAll();
         //     qDebug() << AllLearnData;
         if (learnfile.isOpen()) learnfile.close();
@@ -129,9 +129,9 @@ void InputWindow::on_button_ProcessData_released()
         QString filename2 = (ui->lineEdit_csvPathForSchedule->text());
 //        qDebug() << "Your availablity file is " << filename2;
         QFile calfile(filename2);
-//        if (!calfile.open(QIODevice::ReadOnly | QIODevice::Text)) {
-//            qDebug() << calfile.errorString();
-//        }
+        if (!calfile.open(QIODevice::ReadOnly | QIODevice::Text)) {
+            qDebug() << calfile.errorString();
+        }
         QString AllCalData = calfile.readAll();
         //    qDebug() << AllCalData;
         if (calfile.isOpen()) calfile.close();
@@ -200,33 +200,33 @@ void InputWindow::on_button_ProcessData_released()
 //    qDebug() << "Completed making the schedule.";
 }
 
-void InputWindow::on_button_MakeSchedule_released()
-{
-    if (FullCalendar.size() < 20) {
-        QMessageBox process;
-        process.setText("Be sure to process your data first.");
-        process.setWindowTitle("Wait");
-        process.exec();
-        return;
-    } else {
-        QString NewSchedule = QFileDialog::getSaveFileName(this, tr("Save File"), QString(),
-                                                           tr("CSV File (*.csv)"));
-        QFile CSVFile(NewSchedule);
-        if(!CSVFile.open(QIODevice::WriteOnly)) {
-            QMessageBox::critical(this, tr("Unfinished business"), tr("*csv file has not been saved."));
-            return;
-        }
-        QTextStream out(&CSVFile);
-        out << FullCalendar;
-//        qDebug() << "Wrote to " << NewSchedule;
-        CSVFile.close();
-        QMessageBox success;
-        success.setText("File has been written to your chosen location.");
-        success.setWindowTitle("Good To Go");
-        success.exec();
-    }
+//void InputWindow::on_button_MakeSchedule_released()
+//{
+//    if (FullCalendar.size() < 20) {
+//        QMessageBox process;
+//        process.setText("Be sure to process your data first.");
+//        process.setWindowTitle("Wait");
+//        process.exec();
+//        return;
+//    } else {
+//        QString NewSchedule = QFileDialog::getSaveFileName(this, tr("Save File"), QString(),
+//                                                           tr("CSV File (*.csv)"));
+//        QFile CSVFile(NewSchedule);
+//        if(!CSVFile.open(QIODevice::WriteOnly)) {
+//            QMessageBox::critical(this, tr("Unfinished business"), tr("*csv file has not been saved."));
+//            return;
+//        }
+//        QTextStream out(&CSVFile);
+//        out << FullCalendar;
+////        qDebug() << "Wrote to " << NewSchedule;
+//        CSVFile.close();
+//        QMessageBox success;
+//        success.setText("File has been written to your chosen location.");
+//        success.setWindowTitle("Good To Go");
+//        success.exec();
+//    }
 
-}
+//}
 
 void InputWindow::on_button_MakeiCalFile_released()
 {
@@ -356,4 +356,26 @@ void InputWindow::on_calendarWidget_DateOfStart_selectionChanged()
     if (ui->calendarWidget_DateOfStart->selectedDate().dayOfWeek() == Qt::Monday) {
         startingMonday = ui->calendarWidget_DateOfStart->selectedDate();
     }
+}
+
+void InputWindow::on_actionAbout_triggered()
+{
+    QMessageBox aboutWindow;
+    aboutWindow.setText("Written for personal use only by matthewjearly@gmail.com<br>OverDrive Personal Learning Calendar revision 1");
+    aboutWindow.setWindowTitle("About ODPLC");
+    aboutWindow.exec();
+}
+
+void InputWindow::on_actionReset_triggered()
+{
+    learnlist.clear();
+    FullCalendar.clear();
+    ui->textBrowser_InfoAboutSchedule->clear();
+    ui->lineEdit_csvPathForItems->setText("");
+    ui->lineEdit_csvPathForSchedule->setText("");
+
+    QMessageBox CompleteMessage;
+    CompleteMessage.setText("Reset is complete.");
+    CompleteMessage.setWindowTitle("Reset Complete");
+    CompleteMessage.exec();
 }
