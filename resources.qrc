@@ -1,6 +1,5 @@
 <RCC>
     <qresource prefix="/images">
-        <file>Alpha-Logo.ico</file>
-        <file>Alpha-Logo.png</file>
+        <file>Alpha-ICON.ico</file>
     </qresource>
 </RCC>
