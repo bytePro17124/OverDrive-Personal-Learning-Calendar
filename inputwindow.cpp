@@ -361,7 +361,7 @@ void InputWindow::on_calendarWidget_DateOfStart_selectionChanged()
 void InputWindow::on_actionAbout_triggered()
 {
     QMessageBox aboutWindow;
-    aboutWindow.setText("Written for personal use only by matthewjearly@gmail.com<br>OverDrive Personal Learning Calendar revision 1");
+    aboutWindow.setText("<b>OverDrive Personal Learning Calendar r1</b><br>Written for personal use only by<br>  matthewjearly@gmail.com<br>");
     aboutWindow.setWindowTitle("About ODPLC");
     aboutWindow.exec();
 }
