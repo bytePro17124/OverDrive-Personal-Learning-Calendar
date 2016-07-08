@@ -19,7 +19,8 @@ SOURCES += main.cpp\
 HEADERS  += inputwindow.h \
     learnitem.h
 
-FORMS    += inputwindow.ui
+FORMS    += inputwindow.ui \
+    howto.ui
 
 CONFIG += c++11
 

@@ -188,7 +188,7 @@ void InputWindow::on_button_ProcessData_released()
         } while (freedays > 0);   //repeat till none left
         //we will now have a filled out availability map
         FullCalendar = AllCalData;
-        ui->textBrowser_InfoAboutSchedule->setText(FullCalendar);
+//        ui->textBrowser_InfoAboutSchedule->setText(FullCalendar);   /item removed
         if(FullCalendar.size() > 10) {
             QMessageBox success;
             success.setText("Okay looks like the file processed just fine.");
@@ -218,7 +218,7 @@ void InputWindow::on_button_ProcessData_released()
 //        }
 //        QTextStream out(&CSVFile);
 //        out << FullCalendar;
-////        qDebug() << "Wrote to " << NewSchedule;
+//        qDebug() << "Wrote to " << NewSchedule;
 //        CSVFile.close();
 //        QMessageBox success;
 //        success.setText("File has been written to your chosen location.");
@@ -370,7 +370,7 @@ void InputWindow::on_actionReset_triggered()
 {
     learnlist.clear();
     FullCalendar.clear();
-    ui->textBrowser_InfoAboutSchedule->clear();
+//    ui->textBrowser_InfoAboutSchedule->clear();   //item removed
     ui->lineEdit_csvPathForItems->setText("");
     ui->lineEdit_csvPathForSchedule->setText("");
 
@@ -378,4 +378,10 @@ void InputWindow::on_actionReset_triggered()
     CompleteMessage.setText("Reset is complete.");
     CompleteMessage.setWindowTitle("Reset Complete");
     CompleteMessage.exec();
+}
+
+void InputWindow::on_pushButton_released()
+{
+
+    //open help window until closed
 }

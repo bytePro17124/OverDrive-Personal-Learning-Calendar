@@ -35,6 +35,8 @@ private slots:
 
     void on_actionReset_triggered();
 
+    void on_pushButton_released();
+
 private:
     Ui::InputWindow *ui;
     QDate startingMonday;
