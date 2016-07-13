@@ -13,16 +13,19 @@
 #include <QHostInfo>
 #include <QVector>
 #include <QCalendarWidget>
+#include <help.h>
 
 
 extern QVector<LearnItem> learnlist;
 extern QString FullCalendar;
+extern bool helpOpen;
 
 InputWindow::InputWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::InputWindow)
 {
     ui->setupUi(this);
+    helpOpen = false;
     dtStamp.setDate(QDate::currentDate());
     dtStamp.setTime(QTime::currentTime());
 }
@@ -380,8 +383,16 @@ void InputWindow::on_actionReset_triggered()
     CompleteMessage.exec();
 }
 
-void InputWindow::on_pushButton_released()
+void InputWindow::on_pushButton_Help_released()
 {
+    if (helpOpen == false) {
+      //  qDebug() << "setting helpOpen to true";
+        helpOpen = true;
+        help *helpwindow = new help();
+        helpwindow->show();
+        helpwindow->setAttribute(Qt::WA_DeleteOnClose); //so it runs destructor when closed
+    } else {
+      //  qDebug() << "helpOpen already open";
 
-    //open help window until closed
+    }
 }

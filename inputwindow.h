@@ -35,14 +35,15 @@ private slots:
 
     void on_actionReset_triggered();
 
-    void on_pushButton_released();
+    void on_pushButton_Help_released();
+
+
 
 private:
+
     Ui::InputWindow *ui;
     QDate startingMonday;
     QDateTime dtStamp;
-
-
 };
 
 #endif // INPUTWINDOW_H
