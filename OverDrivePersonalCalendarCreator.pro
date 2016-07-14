@@ -14,12 +14,15 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         inputwindow.cpp \
-    learnitem.cpp
+    learnitem.cpp \
+    help.cpp
 
 HEADERS  += inputwindow.h \
-    learnitem.h
+    learnitem.h \
+    help.h
 
-FORMS    += inputwindow.ui
+FORMS    += inputwindow.ui \
+    help.ui
 
 CONFIG += c++11
 

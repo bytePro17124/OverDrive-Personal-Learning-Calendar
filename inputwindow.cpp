@@ -13,16 +13,19 @@
 #include <QHostInfo>
 #include <QVector>
 #include <QCalendarWidget>
+#include <help.h>
 
 
 extern QVector<LearnItem> learnlist;
 extern QString FullCalendar;
+extern bool helpOpen;
 
 InputWindow::InputWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::InputWindow)
 {
     ui->setupUi(this);
+    helpOpen = false;
     dtStamp.setDate(QDate::currentDate());
     dtStamp.setTime(QTime::currentTime());
 }
@@ -188,7 +191,7 @@ void InputWindow::on_button_ProcessData_released()
         } while (freedays > 0);   //repeat till none left
         //we will now have a filled out availability map
         FullCalendar = AllCalData;
-        ui->textBrowser_InfoAboutSchedule->setText(FullCalendar);
+//        ui->textBrowser_InfoAboutSchedule->setText(FullCalendar);   /item removed
         if(FullCalendar.size() > 10) {
             QMessageBox success;
             success.setText("Okay looks like the file processed just fine.");
@@ -218,7 +221,7 @@ void InputWindow::on_button_ProcessData_released()
 //        }
 //        QTextStream out(&CSVFile);
 //        out << FullCalendar;
-////        qDebug() << "Wrote to " << NewSchedule;
+//        qDebug() << "Wrote to " << NewSchedule;
 //        CSVFile.close();
 //        QMessageBox success;
 //        success.setText("File has been written to your chosen location.");
@@ -361,7 +364,7 @@ void InputWindow::on_calendarWidget_DateOfStart_selectionChanged()
 void InputWindow::on_actionAbout_triggered()
 {
     QMessageBox aboutWindow;
-    aboutWindow.setText("<b>OverDrive Personal Learning Calendar r1</b><br>Written for personal use only by<br>  matthewjearly@gmail.com<br>");
+    aboutWindow.setText("<b>OverDrive Personal Learning Calendar r2</b><br>Written for personal use only by<br>  matthewjearly@gmail.com<br>");
     aboutWindow.setWindowTitle("About ODPLC");
     aboutWindow.exec();
 }
@@ -370,7 +373,7 @@ void InputWindow::on_actionReset_triggered()
 {
     learnlist.clear();
     FullCalendar.clear();
-    ui->textBrowser_InfoAboutSchedule->clear();
+//    ui->textBrowser_InfoAboutSchedule->clear();   //item removed
     ui->lineEdit_csvPathForItems->setText("");
     ui->lineEdit_csvPathForSchedule->setText("");
 
@@ -378,4 +381,18 @@ void InputWindow::on_actionReset_triggered()
     CompleteMessage.setText("Reset is complete.");
     CompleteMessage.setWindowTitle("Reset Complete");
     CompleteMessage.exec();
+}
+
+void InputWindow::on_pushButton_Help_released()
+{
+    if (helpOpen == false) {
+      //  qDebug() << "setting helpOpen to true";
+        helpOpen = true;
+        help *helpwindow = new help();
+        helpwindow->show();
+        helpwindow->setAttribute(Qt::WA_DeleteOnClose); //so it runs destructor when closed
+    } else {
+      //  qDebug() << "helpOpen already open";
+
+    }
 }
