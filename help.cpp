@@ -1,6 +1,6 @@
 #include "help.h"
 #include "ui_help.h"
-#include "InputWindow.h"
+#include "inputwindow.h"
 #include <QDebug>
 
 extern bool helpOpen;
